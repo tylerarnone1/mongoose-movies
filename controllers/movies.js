@@ -2,15 +2,50 @@ var Movie = require('../models/movie');
 var Performer = require('../models/performer');
 
 module.exports = {
-  index,
+  api,
   show,
   new: newMovie,
-  create
+  create,
+  getAllMovie,
+  getOneMovie,
+  createMovie,
+  deleteMovie,
+  updateMovie
 };
 
-function index(req, res) {
+function updateMovie(req, res){
+  Movie.findByIdAndUpdate(req.pararm.id, req.body, {new: true}).then(function(movie){
+      res.status(200).json(movie);
+  });
+}
+
+function deleteMovie(req, res){
+  Movie.findByIdAndRemove(req.params.id).then(function(movie){
+      res.status(200).json(movie);
+  });
+}
+
+function getOneMovie(req, res) {
+  Movie.findById(req.params.id).then(function(movie){
+      res.status(200).json(movie);
+  });
+}
+
+function createMovie(req, res ){
+Movie.create(req.body).then(function(movie){
+res.status(201).json(movie);
+})
+}
+
+function getAllMovie(req, res){
+  Movie.find({}).then(function(movie){
+      res.status(200).json(movie);
+  });
+}
+
+function api(req, res) {
   Movie.find({}, function(err, movies) {
-    res.render('movies/index', { title: 'All Movies', movies });
+    res.render('movies/api', { title: 'All Movies', movies });
   });
 }
 
@@ -45,3 +80,4 @@ function create(req, res) {
     res.redirect(`/movies/${movie._id}`);
   });
 }
+
